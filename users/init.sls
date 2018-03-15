@@ -59,7 +59,9 @@ users_{{ name }}_user:
   {% if user.get('createhome', True) %}
   file.directory:
     - name: {{ home }}
+    {% if 'unique' not  in user -%}
     - user: {{ name }}
+    {%- endif %}
     - group: {{ user_group }}
     - mode: {{ user.get('user_dir_mode', '0750') }}
     - require:
@@ -79,6 +81,9 @@ users_{{ name }}_user:
     - shell: {{ user.get('shell', users.get('shell', '/bin/bash')) }}
     {% if 'uid' in user -%}
     - uid: {{ user['uid'] }}
+    {% endif -%}
+    {% if 'unique' in user -%}
+    - unique: {{ user['unique'] }}
     {% endif -%}
     {% if 'password' in user -%}
     - password: '{{ user['password'] }}'
